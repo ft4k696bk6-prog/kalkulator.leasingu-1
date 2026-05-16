@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import type { CalcInput } from "../lib/calculations";
-import { calculateLeasing, formatPLN } from "../lib/calculations";
+import { calculateLeasing } from "../lib/calculations";
 import LeasingCalculator from "../components/LeasingCalculator";
 import ResultSummary from "../components/ResultSummary";
 import ContactForm from "../components/ContactForm";

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { formatPLN } from "../lib/calculations";
 
@@ -12,22 +12,20 @@ interface FormData {
   phone: string;
   email: string;
   nip: string;
-  itemType: string;
-  amount: string;
   message: string;
   consent: boolean;
 }
 
 export default function ContactForm({ financedAmount, itemType }: Props) {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [form, setForm] = useState<FormData>({
     name: "",
     phone: "",
     email: "",
     nip: "",
-    itemType: itemType,
-    amount: formatPLN(financedAmount),
     message: "",
     consent: false,
   });
@@ -35,6 +33,7 @@ export default function ContactForm({ financedAmount, itemType }: Props) {
   const update = (key: keyof FormData, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: undefined }));
+    setSubmitError("");
   };
 
   const validate = (): boolean => {
@@ -47,13 +46,30 @@ export default function ContactForm({ financedAmount, itemType }: Props) {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
 
-    // TODO: Send to API / webhook / CRM
-    console.log("Lead submitted:", { ...form, financedAmount, itemType });
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, financedAmount, itemType }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Lead request failed");
+      }
+
+      setSubmitted(true);
+    } catch {
+      setSubmitError("Nie udało się wysłać formularza. Spróbuj ponownie za chwilę.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -143,13 +159,17 @@ export default function ContactForm({ financedAmount, itemType }: Props) {
         {errors.consent && (
           <p className="text-xs text-red-500">{errors.consent}</p>
         )}
+        {submitError && (
+          <p className="text-xs text-red-500">{submitError}</p>
+        )}
 
         <button
           type="submit"
-          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
+          disabled={submitting}
+          className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-[var(--color-gold)] text-[var(--color-navy)] rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Send className="w-4 h-4" />
-          Chcę najlepszą ofertę leasingu
+          {submitting ? "Wysyłam..." : "Chcę najlepszą ofertę leasingu"}
         </button>
       </form>
     </div>

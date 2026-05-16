@@ -73,8 +73,6 @@ export function calculateLeasing(input: CalcInput): CalcResult {
     monthlyRateNet = Math.round(financedAmount * (monthlyRate * factor) / (factor - 1));
   }
 
-  const monthlyRateGross = Math.round(monthlyRateNet * (1 + input.vatRate));
-
   // Additional costs (simplified estimates)
   let additionalMonthly = 0;
   if (input.includeInsurance) {

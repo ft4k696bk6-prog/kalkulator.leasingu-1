@@ -7,6 +7,50 @@ interface Props {
 }
 
 export default function ResultSummary({ result }: Props) {
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <!doctype html>
+      <html lang="pl">
+        <head>
+          <meta charset="utf-8" />
+          <title>Podsumowanie leasingu</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #1B2A4A; margin: 40px; }
+            h1 { font-size: 24px; margin: 0 0 24px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+            th, td { border-bottom: 1px solid #E5E7EB; padding: 10px 0; text-align: left; }
+            th { color: #6B7280; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+            .total { font-weight: 700; }
+            .note { margin-top: 24px; color: #6B7280; font-size: 12px; line-height: 1.5; }
+          </style>
+        </head>
+        <body>
+          <h1>Podsumowanie kalkulacji leasingu</h1>
+          <table>
+            <tbody>
+              <tr><th>Szacowana rata netto</th><td>${formatPLN(result.monthlyRateNet)}</td></tr>
+              <tr><th>Szacowana rata brutto</th><td>${formatPLN(result.monthlyRateGross)}</td></tr>
+              <tr><th>Wartość przedmiotu netto</th><td>${formatPLN(result.netValue)}</td></tr>
+              <tr><th>Wartość brutto</th><td>${formatPLN(result.grossValue)}</td></tr>
+              <tr><th>Opłata wstępna netto</th><td>${formatPLN(result.downPaymentNet)}</td></tr>
+              <tr><th>Suma rat netto</th><td>${formatPLN(result.totalRatesNet)}</td></tr>
+              <tr><th>Wykup netto</th><td>${formatPLN(result.buyoutNet)}</td></tr>
+              <tr><th>Okres</th><td>${result.period} mies.</td></tr>
+              <tr class="total"><th>Całkowity koszt netto</th><td>${formatPLN(result.totalCostNet)}</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Wyliczenie ma charakter orientacyjny i nie stanowi oferty w rozumieniu Kodeksu cywilnego.</p>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
   return (
     <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Main rate highlight */}
@@ -67,18 +111,14 @@ export default function ResultSummary({ result }: Props) {
         </div>
       </div>
 
-      {/* TODO: PDF export */}
       <div className="border-t border-border p-5">
         <button
           type="button"
-          onClick={() => {
-            // TODO: Implement PDF export
-            alert("Funkcja eksportu PDF — w przygotowaniu.");
-          }}
+          onClick={handlePrint}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[var(--color-muted)] text-foreground rounded-xl text-sm font-medium hover:bg-[var(--color-border)] transition-colors"
         >
           <FileText className="w-4 h-4" />
-          Pobierz podsumowanie PDF
+          Drukuj lub zapisz PDF
         </button>
       </div>
     </div>

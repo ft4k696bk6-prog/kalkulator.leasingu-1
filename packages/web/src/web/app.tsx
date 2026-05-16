@@ -1,7 +1,7 @@
 import { Route, Switch } from "wouter";
 import Index from "./pages/index";
 import { Provider } from "./components/provider";
-import { AgentFeedback, RunableBadge } from "@runablehq/website-runtime";
+import { AgentFeedback } from "@runablehq/website-runtime";
 
 function App() {
   return (
@@ -10,7 +10,6 @@ function App() {
         <Route path="/" component={Index} />
       </Switch>
       {import.meta.env.DEV && <AgentFeedback />}
-      {<RunableBadge />}
     </Provider>
   );
 }
