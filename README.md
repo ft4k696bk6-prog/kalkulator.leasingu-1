@@ -1,65 +1,74 @@
-# sandbox-app-template
+# Kalkulator Leasingu
 
-Monorepo: Bun workspaces + Turborepo.
+Kalkulator Leasingu is a lead-generation web app for Polish companies that want a quick estimate of leasing costs before talking to a finance advisor. It combines a practical calculator, clear cost breakdowns, printable summaries, and a contact form that can forward leads to an external webhook.
 
-## Project Structure
+Live demo: https://kalkulator-leasingu-1-desktop.vercel.app
 
-```
-.env                         Secrets (gitignored), loaded via Vite's loadEnv
-packages/
-  web/                       Unified server (API + web frontend via Vite)
-    vite.config.ts           Vite 7 config — loads .env, sets port, registers plugins
-    index.html               Frontend HTML entry
-    vite/plugins/
-      hono-dev-plugin.ts     Intercepts /api/* in dev, forwards to Hono via SSR
-      runable-analytics-plugin.ts
-    src/
-      api/
-        index.ts             Hono routes (.basePath('api')) + AppType export
-        database/
-          index.ts           Database client (Turso/LibSQL)
-          schema.ts          Drizzle schema
-      web/
-        main.tsx             App entry
-        app.tsx              Root component + Wouter routing
-        pages/               Page components
-        components/          UI components
-        hooks/
-          use-desktop.ts     Desktop detection
-        lib/
-          api.ts             Typed API client (hono client)
-          desktop.ts         Electron API types
-          utils.ts           Shared utilities
-        styles.css           Tailwind CSS entry
-  mobile/                    Expo + React Native + expo-router
-    app/                     File-based routing
-    lib/
-      api.ts                 Typed API client
-  desktop/                   Electron shell (loads web app from server)
-    electron/
-      main.ts                Main process + IPC handlers
-      preload.ts             contextBridge API
-    vite.config.ts           Vite config
+## What It Does
+
+- Calculates estimated leasing payments for cars, vans, trucks, machinery, and custom asset types.
+- Supports net and gross values, VAT, down payment, lease period, buyout value, annual rate, and optional costs such as insurance, GAP, and service.
+- Shows monthly net and gross rates, financed amount, total installments, buyout, and estimated financing cost.
+- Includes ready-made scenario presets so users can compare common financing setups quickly.
+- Lets users print or save a clean PDF-style calculation summary from the browser.
+- Captures qualified leads through a validated contact form and a Vercel serverless endpoint.
+- Works as a responsive landing page, with the calculator and lead form kept close together on desktop and mobile.
+
+## Why This Project Matters
+
+The goal was to build a small business tool that feels useful immediately, not just a marketing page. The calculator handles the core leasing variables, the result panel explains the numbers clearly, and the form turns a finished calculation into a sales conversation.
+
+Recent work focused on deployment readiness: cleaner validation, a production lead endpoint, Vercel configuration, clearer result summaries, and copy that makes the product easier to understand for real users.
+
+## Tech Stack
+
+- React 19 and TypeScript
+- Vite
+- Bun workspaces and Turborepo
+- Tailwind CSS
+- Hono API structure inside the web package
+- Vercel serverless function for lead capture
+- lucide-react icons
+
+## Repository Structure
+
+```text
+packages/web/       Main calculator web app and API code
+packages/mobile/    Expo shell prepared for mobile expansion
+packages/desktop/   Electron shell prepared for desktop packaging
+api/leads.js        Vercel lead capture endpoint
+design.md           Product and layout notes
 ```
 
-## Environment Variables
+## Running Locally
 
-Secrets and credentials live in `.env` at the project root (gitignored). Vite's `loadEnv` loads them into `process.env` at dev/build time (configured in `packages/web/vite.config.ts`). In API code (Hono), use `process.env.YOUR_VAR`. In browser code, only `VITE_`-prefixed vars are exposed via `import.meta.env.VITE_YOUR_VAR`. Drizzle scripts use `bun --env-file=../../.env` to load env vars directly.
-
-## Desktop UI
-
-The desktop app has no separate renderer by default. It loads the web app from `packages/web`; desktop-specific UI should live in `packages/web/src/web/` and be gated with `useDesktop()` / `window.electronAPI`. Keep `packages/desktop` for Electron window setup, menus/tray/shortcuts, IPC handlers, native OS APIs, and packaging. Only add a separate desktop renderer when the product intentionally needs a different desktop-only UI architecture.
-
-## Servers
-
-Dev servers are started and managed automatically — no need to run them manually.
-
-## Database
-
-```sh
-cd packages/web
-bun run db:push        # Push schema to database
-bun run db:generate    # Generate migration files
-bun run db:migrate     # Run migrations
-bun run db:studio      # Open Drizzle Studio
+```bash
+bun install
+bun run dev
 ```
+
+Build all workspace packages:
+
+```bash
+bun run build
+```
+
+Run type checks:
+
+```bash
+bun run typecheck
+```
+
+## Environment
+
+Lead submissions can be forwarded to another system by setting:
+
+```bash
+LEADS_WEBHOOK_URL=https://example.com/your-webhook
+```
+
+Without this variable, the endpoint validates the lead and logs the payload, which keeps local development simple.
+
+## Current Status
+
+This is a functional portfolio version of a leasing calculator and lead capture flow. The next strongest improvements would be CRM integration, stored lead history, analytics on calculator usage, and more detailed leasing rules per asset category.

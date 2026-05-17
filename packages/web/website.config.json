@@ -1,8 +1,8 @@
 {
     "id": "website",
-    "name": "Runable",
-    "description": "A template for building a React application with Vite, Hono, and Cloudflare Workers",
-    "url": "https://example.com",
-    "hostname": "xyz.runable.site",
+    "name": "Kalkulator Leasingu",
+    "description": "Lead-generation leasing calculator for Polish businesses.",
+    "url": "https://kalkulator-leasingu-1-desktop.vercel.app",
+    "hostname": "kalkulator-leasingu-1-desktop.vercel.app",
     "port": 8080
 }

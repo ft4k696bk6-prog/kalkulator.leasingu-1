@@ -1,5 +1,6 @@
 {
   "name": "@template/web",
+  "description": "Web calculator, result summary, and lead capture flow for Kalkulator Leasingu.",
   "private": true,
   "type": "module",
   "exports": {
