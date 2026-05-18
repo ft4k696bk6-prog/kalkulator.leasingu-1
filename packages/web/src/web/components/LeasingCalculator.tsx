@@ -30,7 +30,20 @@ interface Props {
   input: CalcInput;
 }
 
-function SelectChips({ options, value, onChange }: { options: { label: string; value: string | number }[]; value: string | number; onChange: (v: any) => void }) {
+type SelectOption<T extends string | number> = {
+  label: string;
+  value: T;
+};
+
+function SelectChips<T extends string | number>({
+  options,
+  value,
+  onChange,
+}: {
+  options: SelectOption<T>[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((opt) => (
