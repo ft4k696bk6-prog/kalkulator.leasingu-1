@@ -1,74 +1,113 @@
 # Kalkulator Leasingu
 
-Kalkulator Leasingu is a lead-generation web app for Polish companies that want a quick estimate of leasing costs before talking to a finance advisor. It combines a practical calculator, clear cost breakdowns, printable summaries, and a contact form that can forward leads to an external webhook.
+Kalkulator Leasingu is a business calculator demo for Polish companies that need an indicative leasing cost estimate before moving into a finance offer conversation.
 
-Live demo: https://kalkulator-leasingu-1-desktop.vercel.app
+PL: Kalkulator ma charakter informacyjny. Nie jest ofertą finansową, a wyniki mogą różnić się od rzeczywistych propozycji leasingowych.
 
-## What It Does
+## Live demo
 
-- Calculates estimated leasing payments for cars, vans, trucks, machinery, and custom asset types.
-- Supports net and gross values, VAT, down payment, lease period, buyout value, annual rate, and optional costs such as insurance, GAP, and service.
-- Shows monthly net and gross rates, financed amount, total installments, buyout, and estimated financing cost.
-- Includes ready-made scenario presets so users can compare common financing setups quickly.
-- Lets users print or save a clean PDF-style calculation summary from the browser.
-- Captures qualified leads through a validated contact form and a Vercel serverless endpoint.
-- Works as a responsive landing page, with the calculator and lead form kept close together on desktop and mobile.
+https://kalkulator-leasingu-1-desktop.vercel.app
 
-## Why This Project Matters
+## Screenshots
 
-The goal was to build a small business tool that feels useful immediately, not just a marketing page. The calculator handles the core leasing variables, the result panel explains the numbers clearly, and the form turns a finished calculation into a sales conversation.
+Screenshots should be added to `docs/screenshots/`. Placeholder links are not included.
 
-Recent work focused on deployment readiness: cleaner validation, a production lead endpoint, Vercel configuration, clearer result summaries, and copy that makes the product easier to understand for real users.
+## Features
 
-## Tech Stack
+- Leasing calculation for cars, vans, trucks, machinery and custom asset types.
+- Net/gross value handling and VAT conversion.
+- Down payment, leasing period, buyout and annual rate inputs.
+- Optional simplified insurance, GAP and service cost estimates.
+- Monthly net/gross rate, financed amount, total installments and financing cost summary.
+- Scenario presets for quick comparison.
+- Print/save-friendly result summary.
+- Lead capture form and Vercel serverless endpoint.
 
-- React 19 and TypeScript
+## Calculation logic
+
+Core logic lives in `packages/web/src/web/lib/calculations.ts`.
+
+- Gross values are converted to net when `isGross` is enabled.
+- Down payment and buyout are calculated as percentages of net value.
+- Financed amount is `net value - down payment - buyout`.
+- Monthly payment uses a simplified annuity formula: `PMT = PV * r * (1+r)^n / ((1+r)^n - 1)`.
+- Optional monthly costs are simplified annual percentages split into monthly values.
+
+These formulas are intentionally simplified and should not be treated as financial advice.
+
+## Tech stack
+
+- React
+- TypeScript
 - Vite
-- Bun workspaces and Turborepo
+- Bun workspaces
+- Turborepo
+- Hono
+- Drizzle
 - Tailwind CSS
-- Hono API structure inside the web package
-- Vercel serverless function for lead capture
-- lucide-react icons
+- Vercel
+- Vitest
 
-## Repository Structure
+## Project structure
 
-```text
-packages/web/       Main calculator web app and API code
-packages/mobile/    Expo shell prepared for mobile expansion
-packages/desktop/   Electron shell prepared for desktop packaging
-api/leads.js        Vercel lead capture endpoint
-design.md           Product and layout notes
-```
+- `packages/web/` — main calculator web app and API code.
+- `packages/web/src/web/lib/calculations.ts` — calculation logic.
+- `packages/web/src/web/components/` — calculator, result summary and form UI.
+- `packages/mobile/` — Expo shell prepared for future mobile work.
+- `packages/desktop/` — Electron shell prepared for future desktop packaging.
+- `api/leads.js` — Vercel lead endpoint.
+- `docs/` — roadmap, changelog, issue backlog and screenshots folder.
 
-## Running Locally
+## Getting started
 
 ```bash
+git clone https://github.com/ft4k696bk6-prog/kalkulator.leasingu-1.git
+cd kalkulator.leasingu-1
 bun install
 bun run dev
 ```
 
-Build all workspace packages:
+Quality checks:
 
 ```bash
+bun run lint
+bun run typecheck
+bun run test
 bun run build
 ```
 
-Run type checks:
+## Environment variables
+
+Create `.env` from `.env.example`.
 
 ```bash
-bun run typecheck
+LEADS_WEBHOOK_URL=
+DATABASE_URL=
+DATABASE_AUTH_TOKEN=
 ```
 
-## Environment
+`LEADS_WEBHOOK_URL` is optional. Without it, lead payloads are validated and logged by the endpoint.
 
-Lead submissions can be forwarded to another system by setting:
+## What I learned
 
-```bash
-LEADS_WEBHOOK_URL=https://example.com/your-webhook
-```
+- Separating calculation logic from UI.
+- Designing a result summary for business users.
+- Handling indicative financial copy responsibly.
+- Building a lead-generation flow around a useful calculator.
+- Working with a monorepo-style Vite/Bun project.
 
-Without this variable, the endpoint validates the lead and logs the payload, which keeps local development simple.
+## Roadmap
 
-## Current Status
+- Add more calculation scenarios and edge-case tests.
+- Improve lead persistence instead of webhook-only forwarding.
+- Add analytics for calculator usage.
+- Improve accessibility of form controls.
+- Add screenshots and browser smoke checks.
 
-This is a functional portfolio version of a leasing calculator and lead capture flow. The next strongest improvements would be CRM integration, stored lead history, analytics on calculator usage, and more detailed leasing rules per asset category.
+## Status
+
+Production-like business tool demo.
+
+## License
+
+MIT.
