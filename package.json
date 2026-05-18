@@ -2,7 +2,7 @@
   "name": "kalkulator-leasingu",
   "description": "Lead-generation leasing calculator for Polish businesses, built with React, Vite, Bun, and Vercel.",
   "private": true,
-  "packageManager": "bun@1.3.5",
+  "packageManager": "bun@1.3.14",
   "workspaces": [
     "packages/*"
   ],
