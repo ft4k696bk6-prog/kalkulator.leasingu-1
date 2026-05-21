@@ -8,7 +8,7 @@ import { initGoogleAnalytics } from "./lib/google-analytics";
 
 const queryClient = new QueryClient();
 
-initGoogleAnalytics(import.meta.env.VITE_GA_MEASUREMENT_ID || "G-TK4SBLRBPZ");
+initGoogleAnalytics(import.meta.env.VITE_GA_MEASUREMENT_ID, import.meta.env.VITE_GOOGLE_TAG_ID);
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
