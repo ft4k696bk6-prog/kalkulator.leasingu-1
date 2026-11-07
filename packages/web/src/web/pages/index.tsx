@@ -123,6 +123,13 @@ export default function Index() {
           </p>
         </div>
       </main>
+      <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground">
+        Made by{" "}
+        <a href="https://bernecki.dev/" target="_blank" rel="noopener noreferrer"
+          className="underline underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4">
+          bernecki.dev
+        </a>
+      </footer>
     </div>
   );
 }
